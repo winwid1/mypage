@@ -1,92 +1,42 @@
+const X_CLASS = 'x';
+const O_CLASS = 'o';
+const WINNING_COMBINATIONS = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6]
+];
 
-<html>
-<head>
-    <meta property="og:title" content="김용은 - 프로필 링크">
-    <meta property="og:description" content="코딩 연습">
-    <meta property="og:image" content="태극기.png">
-    <script type="text/javascript" src=""></script>
-    <title>20706김용은-과학발표</title>
-    <style>
-        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-*   {
-      font-family: "Pretendard",serif;
-    }
-        body {
-            background-color: rgb(112, 112, 230);
-        }
-        .profile {
-            width: 100px;
-            height: 100px;
-            
-            border-radius: 100%;
+const cellElements = document.querySelectorAll('[data-cell]');
+const board = document.getElementById('game');
+const winningMessageElement = document.getElementById('winning-message');
+const restartButton = document.getElementById('restartButton');
+const winningMessageTextElement = document.querySelector('[data-winning-message-text]');
+let circleTurn;
 
+startGame();
 
-            border : 2px solid:rgb(112, 112, 230);
+restartButton.addEventListener('click', startGame);
 
-            background-image: url('누리호 사진.png');
-            background-position: center;
-            background-size: cover;
-        }
-        .main{
-            color: white;
-            font-size: 20px;
+function startGame() {
+  circleTurn = false;
+  cellElements.forEach(cell => {
+    cell.classList.remove(X_CLASS);
+    cell.classList.remove(O_CLASS);
+    cell.removeEventListener('click', handleClick);
+    cell.addEventListener('click', handleClick, { once: true });
+  });
+  setBoardHoverClass();
+  winningMessageElement.classList.remove('show');
+}
 
-            margin-top: 30px;
-            margin-bottom: 10px;
-        }
-        .sub{
-            color: white;
-            font-size: 14px;
-
-            margin-top: 0px;
-            margin-bottom: 30px;
-        }
-        .wrap {
-            width: 300px;
-            margin: 30px auto 0px auto;
-            
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .wrap > a{
-            width: 300px;
-            height: 40px;
-
-            background-color: white;
-            border-radius: 50px;
-
-            margin-bottom: 13px;
-
-            font-size: 23px;
-            font-weight: bold;
-            color: #44398A;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-
-            text-decoration: none;
-
-            box-shadow: 3px 3px 5px 0px black;
-        }
-        .wrap > a:hover{
-            background-color: white
-
-        }
-
-    </style>
-</head>
-<body>
-        20706 김용은
-        <div class="wrap">
-        <div class="profile"></div>
-        <h1 class="main">과학 발표(김용은)</h1>
-        <P class="sub">코딩 연습</P>
-        <a target="_blank" href="https://www.youtube.com/watch?v=hMA6s1rK-8s">누리호</a>
-        <a target="_blank" href="https://www.youtube.com/watch?v=hMA6s1rK-8s">.</a>
-    </div>
-</body>
-</html>
+function handleClick(e) {
+  const cell = e.target;
+  const currentClass = circleTurn ? O_CLASS : X_CLASS;
+  placeMark(cell, currentClass);
+  if (checkWin(currentClass)) {
+   
